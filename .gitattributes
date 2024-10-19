@@ -1,4 +1,8 @@
 .outputs/LSTM_45m.pt filter=lfs diff=lfs merge=lfs -text
 .outputs/LSTM_148m.pt filter=lfs diff=lfs merge=lfs -text
 .data/row_data/IMDB_Dataset.csv filter=lfs diff=lfs merge=lfs -text
+outputs/LSTM_45m.pt filter=lfs diff=lfs merge=lfs -text
+outputs/LSTM_148m.pt filter=lfs diff=lfs merge=lfs -text
+data/row_data/IMDB_Dataset.csv filter=lfs diff=lfs merge=lfs -text
+outputs/LSTM_15m.pt filter=lfs diff=lfs merge=lfs -text
 *.csv filter=lfs diff=lfs merge=lfs -text
