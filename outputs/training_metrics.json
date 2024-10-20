@@ -1,0 +1,53 @@
+[
+    {
+        "embedding_dim": 256,
+        "hidden_dim": 256,
+        "output_dim": 1,
+        "n_layers": 5,
+        "bidirectional": true,
+        "dropout": 0.5,
+        "batch_size": 1024,
+        "learning_rate": 0.0005,
+        "best_valid_loss": 0.4177811622619629,
+        "final_train_loss": 0.2988523823874337,
+        "final_train_accuracy": 0.8686274749892099,
+        "final_valid_loss": 0.45838870406150817,
+        "final_valid_accuracy": 0.8646104097366333,
+        "final_test_loss": 0.4853412866592407,
+        "final_test_accuracy": 0.8625139534473419
+    },
+    {
+        "embedding_dim": 512,
+        "hidden_dim": 512,
+        "output_dim": 1,
+        "n_layers": 5,
+        "bidirectional": true,
+        "dropout": 0.5,
+        "batch_size": 1024,
+        "learning_rate": 0.0005,
+        "best_valid_loss": 0.4521749973297119,
+        "final_train_loss": 0.2469426278557096,
+        "final_train_accuracy": 0.89644798210689,
+        "final_valid_loss": 0.5438180804252625,
+        "final_valid_accuracy": 0.8667467474937439,
+        "final_test_loss": 0.5569899410009385,
+        "final_test_accuracy": 0.8668646335601806
+    },
+    {
+        "embedding_dim": 1024,
+        "hidden_dim": 1024,
+        "output_dim": 1,
+        "n_layers": 5,
+        "bidirectional": true,
+        "dropout": 0.5,
+        "batch_size": 1024,
+        "learning_rate": 0.0005,
+        "best_valid_loss": 0.4292650282382965,
+        "final_train_loss": 0.25267114000661034,
+        "final_train_accuracy": 0.8928814053535461,
+        "final_valid_loss": 0.6679960250854492,
+        "final_valid_accuracy": 0.8600801944732666,
+        "final_test_loss": 0.6971356451511384,
+        "final_test_accuracy": 0.860638552904129
+    }
+]
