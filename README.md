@@ -54,6 +54,10 @@ The STSB dataset should be available in the `data/raw/kaggle/` directory, with f
 
 Currently, this project uses an LSTM model which is already trained. If you want to train from scratch, you need to create a training script similar to `train.py`. Model parameters are saved in the `outputs/` folder.
 
+```sh
+python train.py
+```
+
 #### 2. Evaluate the Model
 
 To evaluate the model on the STSB test dataset, run the following command:
