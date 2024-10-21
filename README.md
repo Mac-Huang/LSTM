@@ -59,17 +59,17 @@ Currently, this project uses an LSTM model which is already trained. If you want
 To evaluate the model on the STSB test dataset, run the following command:
 
 ```sh
-python evaluate_stsb_metrics.py
+python evaluate.py
 ```
 
 This script will calculate and print metrics like Pearson Correlation, MSE, R² Score, and Average Cosine Similarity, and save the results in the `outputs/` folder.
 
 #### 3. Predict Sentence Similarity
 
-You can use the `predict_stsb_similarity.py` script to predict the similarity between two user-provided sentences:
+You can use the `predict.py` script to predict the similarity between two user-provided sentences:
 
 ```sh
-python predict_stsb_similarity.py
+python predict.py
 ```
 
 The script will prompt you to enter two sentences, and then it will output the predicted similarity score.
@@ -85,7 +85,7 @@ The script will prompt you to enter two sentences, and then it will output the p
   - **Dropout**: 0.2
   - **Batch Size**: 512
   - **Learning Rate**: 0.0005
-- **Loss Function**: MSE (Mean Squared Error) to train the model to predict similarity scores ranging from 0 to 5.
+- **Loss Function**: MSE (Mean Squared Error) to train the model to predict similarity scores ranging from 0 to 1.
 
 ## Evaluation Metrics
 
