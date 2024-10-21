@@ -1,77 +1,122 @@
-# LSTM Project
+# LSTM Text Similarity on STSB Dataset
 
-This is the main branch of the LSTM project repository. It contains the core components that are shared across different tasks, including the base LSTM model and reusable utility functions.
+This project aims to evaluate text similarity using an LSTM-based model trained on the STSB (Semantic Textual Similarity Benchmark) dataset. The project utilizes a Bi-LSTM architecture along with BERT tokenization to predict the similarity score between pairs of sentences.
 
-## Overview
-The main branch provides the general-purpose LSTM model implementation and utility functions. These components serve as the foundation for various tasks like sentiment analysis and text similarity, which are implemented in dedicated branches.
+## Project Structure
 
-## Branches
-This repository includes multiple branches, each serving a distinct purpose:
+- **src/**: Contains the core code for the project.
+  - **model.py**: Defines the LSTM-based model architecture used for predicting text similarity.
+  - **preprocess.py**: Includes functions for preparing and tokenizing the dataset.
+  - **utils.py**: Utility functions for training, evaluating, and plotting metrics.
 
-- **Main Branch** (current branch): Contains the shared LSTM model (`model.py`) and general utility scripts (`utils.py`). This branch is intended to act as the base for other tasks.
-- **SentiAnaly**: This branch contains all the scripts and configurations required for training and evaluating an LSTM model for sentiment analysis.
-- **TextSimi**: This branch focuses on implementing text similarity calculations using the LSTM model. It includes training scripts and configurations for fine-tuning the LSTM on similarity tasks like STSB (Semantic Textual Similarity Benchmark).
+- **evaluate_stsb_metrics.py**: A script for evaluating the model on the STSB test set. It calculates various metrics including Pearson Correlation, Mean Squared Error (MSE), R² Score, and Average Cosine Similarity.
 
-## Directory Structure
-The structure of this main branch is as follows:
+- **predict_stsb_similarity.py**: A script for predicting similarity scores between two user-provided sentences using the trained LSTM model.
 
-```
-LSTM/
-├── src/
-│   ├── model.py                # Base LSTM model code (shared)
-│   ├── utils.py                # Shared utility functions (e.g., accuracy calculation, evaluation)
-│   └── __init__.py             # Makes 'src' a package
-├── data/
-│   ├── row_data/               # Raw dataset (used for both sentiment and similarity tasks)
-│   ├── clean_data/             # Cleaned data that can be shared across tasks
-│   └── stopwords/              # Stopwords for data preprocessing
-├── notebooks/                  # Jupyter notebooks for exploratory analysis
-├── README.md                   # General README for the main branch
-└── requirements.txt            # Python dependencies
-```
+- **data/**: Contains raw and preprocessed data for training and evaluation.
+  - **processed/**: Contains processed versions of the dataset.
+  - **raw/**: Contains the raw dataset files.
+    - **huggingface/**: Raw data from Hugging Face.
+    - **kaggle/**: Raw data from Kaggle.
 
-## How to Use
+- **notebooks/**: Jupyter notebooks used for exploratory data analysis and prototyping.
 
-### Setting Up the Environment
-To set up the environment and install the required dependencies, use the following commands:
+- **outputs/**: Stores model weights, evaluation metrics, and plots generated during training and evaluation.
+
+## Setup Instructions
+
+### Prerequisites
+
+- Python >= 3.7
+- PyTorch >= 1.7
+- Transformers
+- Datasets (Hugging Face)
+- Scikit-learn
+- Tqdm
+
+You can install the required Python packages by running:
 
 ```sh
-# Clone the repository
-git clone <repository-url>
-
-# Navigate to the repository
-cd LSTM
-
-# Install the dependencies
 pip install -r requirements.txt
 ```
 
-### Switching to Other Branches
-To work on a specific task, switch to the appropriate branch:
+### Data Preparation
 
-- **Sentiment Analysis**: 
-  ```sh
-  git checkout SentiAnaly
-  ```
+The STSB dataset should be available in the `data/raw/kaggle/` directory, with files named:
 
-- **Text Similarity**:
-  ```sh
-  git checkout TextSimi
-  ```
+- `stsb_train.tsv`
+- `stsb_dev.tsv`
+- `stsb_test.tsv`
 
-Each branch contains its own README file with detailed instructions on how to use the scripts and configurations specific to that task.
+### Running the Code
 
-## Contribution Guidelines
-If you want to contribute to the project, please follow these guidelines:
+#### 1. Train the Model
 
-1. Fork the repository and create your feature branch (`git checkout -b feature/new-feature`).
-2. Commit your changes (`git commit -m 'Add some feature'`).
-3. Push to the branch (`git push origin feature/new-feature`).
-4. Open a pull request.
+Currently, this project uses an LSTM model which is already trained. If you want to train from scratch, you need to create a training script similar to `train.py`. Model parameters are saved in the `outputs/` folder.
+
+#### 2. Evaluate the Model
+
+To evaluate the model on the STSB test dataset, run the following command:
+
+```sh
+python evaluate_stsb_metrics.py
+```
+
+This script will calculate and print metrics like Pearson Correlation, MSE, R² Score, and Average Cosine Similarity, and save the results in the `outputs/` folder.
+
+#### 3. Predict Sentence Similarity
+
+You can use the `predict_stsb_similarity.py` script to predict the similarity between two user-provided sentences:
+
+```sh
+python predict_stsb_similarity.py
+```
+
+The script will prompt you to enter two sentences, and then it will output the predicted similarity score.
+
+## Model Details
+
+- **Architecture**: Bi-LSTM with 2 layers, trained using BERT embeddings.
+- **Hyperparameters**:
+  - **Embedding Dimension**: 1536
+  - **Hidden Dimension**: 768
+  - **Number of Layers**: 2
+  - **Bidirectional**: True
+  - **Dropout**: 0.2
+  - **Batch Size**: 512
+  - **Learning Rate**: 0.0005
+- **Loss Function**: MSE (Mean Squared Error) to train the model to predict similarity scores ranging from 0 to 5.
+
+## Evaluation Metrics
+
+- **Best Validation Loss**: 0.1078
+- **Final Training Loss**: 0.0834
+- **Final Training Accuracy**: 0.927
+- **Final Validation Loss**: 0.1171
+- **Final Validation Accuracy**: 0.836
+- **Final Test Loss**: 0.0948
+- **Final Test Accuracy**: 0.900
+- **Pearson Correlation**: 0.180
+
+- **Pearson Correlation**: Measures linear correlation between predictions and true scores.
+- **Mean Squared Error (MSE)**: Measures the average squared difference between predicted values and actual values.
+- **R² Score**: Represents the proportion of variance in the dependent variable that is predictable from the independent variable.
+- **Average Cosine Similarity**: Measures similarity between embeddings produced by the LSTM for the two input sentences.
+
+## Future Work
+
+- Improve the model architecture by incorporating a transformer-based model like BERT or RoBERTa.
+- Experiment with different loss functions such as Huber Loss or Cosine Embedding Loss to improve prediction quality.
+- Add additional regularization methods like L2 regularization to improve model generalization.
 
 ## License
-This project is open-source and available under the [MIT License](LICENSE).
 
-## Contact
-If you have any questions or suggestions regarding the project, feel free to open an issue or contact the maintainers.
+This project is licensed under the MIT License. See the `LICENSE` file for more information.
+
+## Acknowledgements
+
+- The project utilizes the STSB dataset for training and evaluation.
+- Thanks to the Hugging Face community for providing helpful tools and pre-trained models.
+
+If you have any questions or suggestions, feel free to reach out!
 
