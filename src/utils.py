@@ -1,7 +1,6 @@
 import torch
 import matplotlib.pyplot as plt
 import sys
-import torch
 import tqdm
 
 # Model training function
@@ -9,20 +8,24 @@ def train(dataloader, model, criterion, optimizer, device):
     model.train()
     epoch_losses = []
     epoch_accs = []
-    for batch in tqdm.tqdm(dataloader, desc='training...', file=sys.stdout):
-        (label, ids, length) = batch
-        label = label.to(device).float()
-        ids = ids.to(device)
-        length = length.to(device)
+    
+    for (encoded_sent1, encoded_sent2), scores, (length1, length2) in tqdm.tqdm(dataloader, desc='training...', file=sys.stdout):
+        encoded_sent1 = {k: v.to(device) for k, v in encoded_sent1.items()}
+        encoded_sent2 = {k: v.to(device) for k, v in encoded_sent2.items()}
+        scores = scores.to(device)
         
-        prediction = model(ids, length)
-        loss = criterion(prediction.squeeze(), label)
-        accuracy = get_accuracy(prediction.squeeze(), label.float())
         optimizer.zero_grad()
+        lengths = torch.min(length1, length2).to(device)  # Use the shorter of the two for packing
+        prediction = model(encoded_sent1['input_ids'], encoded_sent2['input_ids'], lengths)
+        loss = criterion(prediction.squeeze(), scores)
+        accuracy = get_accuracy(prediction.squeeze(), scores.float())
+        
         loss.backward()
         optimizer.step()
+        
         epoch_losses.append(loss.item())
         epoch_accs.append(accuracy.item())
+        
     return epoch_losses, epoch_accs
 
 # Model evaluation function
@@ -30,42 +33,32 @@ def evaluate(dataloader, model, criterion, device):
     model.eval()
     epoch_losses = []
     epoch_accs = []
+    
     with torch.no_grad():
-        for batch in tqdm.tqdm(dataloader, desc='evaluating...', file=sys.stdout):
-            (label, ids, length) = batch
-            label = label.to(device).float()
-            ids = ids.to(device)
-            length = length.to(device)
+        for (encoded_sent1, encoded_sent2), scores, (length1, length2) in tqdm.tqdm(dataloader, desc='evaluating...', file=sys.stdout):
+            encoded_sent1 = {k: v.to(device) for k, v in encoded_sent1.items()}
+            encoded_sent2 = {k: v.to(device) for k, v in encoded_sent2.items()}
+            scores = scores.to(device)
             
-            prediction = model(ids, length)
-            loss = criterion(prediction.squeeze(), label)
-            accuracy = get_accuracy(prediction.squeeze(), label.float())
+            lengths = torch.min(length1, length2).to(device)  # Use the shorter of the two for packing
+            prediction = model(encoded_sent1['input_ids'], encoded_sent2['input_ids'], lengths)
+            loss = criterion(prediction.squeeze(), scores)
+            accuracy = get_accuracy(prediction.squeeze(), scores.float())
+            
             epoch_losses.append(loss.item())
             epoch_accs.append(accuracy.item())
+            
     return epoch_losses, epoch_accs
 
-# Accuracy calculation for binary classification
-def get_accuracy(prediction, label, threshold=0.5):
-    predicted_classes = (prediction >= threshold).long()  # Binary classification using threshold
-    correct_predictions = predicted_classes.eq(label).sum().item()
-    accuracy = correct_predictions / len(label)
-    return torch.tensor(accuracy)  # Ensure accuracy is returned as a tensor
 
-def collate_batch(batch):
-    label_list, text_list, length_list = [], [], []
+# Accuracy calculation for regression (using similarity threshold)
+def get_accuracy(prediction, score, threshold=0.5):
+    diff = torch.abs(prediction - score)
+    correct = (diff < threshold).float()
+    accuracy = correct.sum() / len(correct)
+    return accuracy
 
-    for (text, label, length) in batch:
-        text_list.append(text)
-        label_list.append(label)
-        length_list.append(length)
-
-    label_list = torch.stack(label_list, dim=0)
-    text_list = torch.stack(text_list, dim=0)
-    length_list = torch.tensor(length_list, dtype=torch.int64)
-
-    return label_list, text_list, length_list
-
-
+# Plot training and validation losses
 def plot_losses(train_losses, valid_losses, output_dir):
     plt.figure()
     plt.plot(train_losses, label='Training Loss')

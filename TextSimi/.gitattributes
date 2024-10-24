@@ -1,3 +1,0 @@
-TextSimi/data/raw/kaggle/triplet_train.tsv filter=lfs diff=lfs merge=lfs -text
-TextSimi/data/raw/kaggle/pair-score_train.tsv filter=lfs diff=lfs merge=lfs -text
-TextSimi/data/raw/kaggle/pair-class_train.tsv filter=lfs diff=lfs merge=lfs -text
